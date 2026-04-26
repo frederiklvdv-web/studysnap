@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudySnap — From 80 pages to exam-ready in 5 minutes</title>
+<meta name="description" content="StudySnap uses AI to automatically summarize your study materials, generate practice questions and test your knowledge — so you score higher with less effort.">
+<meta property="og:title" content="StudySnap — AI Study Tool for Students">
+<meta property="og:description" content="Upload your PDF. Get a summary, practice questions and flashcards in 60 seconds.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0C0E0A; --bg2:#131610; --bg3:#181C14;
+  --accent:#C8F56A; --accent2:#A8E044;
+  --text:#F0EDE4; --muted:#8A9070;
+  --border:rgba(200,245,106,0.12); --card:#161A11;
+  --radius:16px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:17px;line-height:1.6;overflow-x:hidden;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:rgba(12,14,10,0.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.logo{font-family:'DM Serif Display',serif;font-size:26px;color:var(--accent);letter-spacing:-0.5px;text-decoration:none;}
+.logo span{color:var(--text);}
+.nav-links{list-style:none;display:flex;gap:36px;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:15px;font-weight:600;letter-spacing:.02em;transition:color .2s;}
+.nav-links a:hover{color:var(--text);}
+.nav-right{display:flex;align-items:center;gap:16px;}
+.nav-login{color:var(--muted);text-decoration:none;font-size:14px;font-weight:600;transition:color .2s;}
+.nav-login:hover{color:var(--text);}
+.nav-cta{background:var(--accent);color:#0C0E0A;padding:10px 24px;border-radius:100px;font-weight:800;font-size:14px;text-decoration:none;transition:transform .15s,box-shadow .15s;}
+.nav-cta:hover{transform:scale(1.03);box-shadow:0 0 24px rgba(200,245,106,.4);}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:160px 24px 100px;position:relative;overflow:hidden;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(200,245,106,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(200,245,106,.04) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 70% at 50% 50%,black 30%,transparent 100%);}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(200,245,106,.1);border:1px solid rgba(200,245,106,.25);color:var(--accent);padding:8px 18px;border-radius:100px;font-size:13px;font-weight:700;letter-spacing:.05em;margin-bottom:36px;text-transform:uppercase;animation:fadeUp .6s ease both;}
+.pulse{width:8px;height:8px;background:var(--accent);border-radius:50%;animation:pulse 2s ease infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(1.4);}}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(52px,7vw,96px);line-height:1.02;letter-spacing:-2px;margin-bottom:28px;animation:fadeUp .6s .1s ease both;}
+.hero h1 em{font-style:italic;color:var(--accent);}
+.hero-sub{font-size:clamp(17px,2vw,20px);color:var(--muted);max-width:580px;margin:0 auto 48px;line-height:1.65;animation:fadeUp .6s .2s ease both;}
+.hero-actions{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;animation:fadeUp .6s .3s ease both;}
+.btn-primary{background:var(--accent);color:#0C0E0A;padding:16px 36px;border-radius:100px;font-weight:800;font-size:16px;text-decoration:none;transition:transform .15s,box-shadow .15s;box-shadow:0 0 40px rgba(200,245,106,.3);display:inline-block;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 50px rgba(200,245,106,.4);}
+.btn-ghost{background:transparent;color:var(--text);padding:16px 36px;border-radius:100px;font-weight:700;font-size:16px;text-decoration:none;border:1px solid rgba(240,237,228,.2);transition:border-color .2s,background .2s;display:inline-block;}
+.btn-ghost:hover{border-color:rgba(240,237,228,.4);background:rgba(240,237,228,.05);}
+.hero-social{margin-top:60px;color:var(--muted);font-size:14px;animation:fadeUp .6s .4s ease both;}
+.hero-avatars{display:inline-flex;margin-right:12px;vertical-align:middle;}
+.avatar{width:32px;height:32px;border-radius:50%;border:2px solid var(--bg);margin-right:-8px;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;}
+.av1{background:#4A7C59;color:#C8F56A;} .av2{background:#7C4A4A;color:#F5C8C8;} .av3{background:#4A5C7C;color:#C8D8F5;} .av4{background:#7C7C4A;color:#F5F0C8;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── TICKER ── */
+.ticker-wrap{border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2);padding:14px 0;overflow:hidden;white-space:nowrap;}
+.ticker-inner{display:inline-flex;animation:ticker 28s linear infinite;}
+.ticker-inner:hover{animation-play-state:paused;}
+.tick-item{display:inline-flex;align-items:center;gap:10px;padding:0 40px;font-size:14px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;}
+.tick-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);}
+@keyframes ticker{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* ── SECTIONS ── */
+section{padding:120px 24px;}
+.container{max-width:1100px;margin:0 auto;}
+.section-label{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:20px;}
+.section-title{font-family:'DM Serif Display',serif;font-size:clamp(36px,5vw,60px);line-height:1.08;letter-spacing:-1px;}
+.section-title em{font-style:italic;color:var(--accent);}
+.section-center{text-align:center;}
+.section-center .section-label,.section-center .section-title{text-align:center;}
+
+/* ── MOCKUP ── */
+.mockup-section{padding:0 24px 120px;}
+.mockup-wrap{max-width:920px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:24px;overflow:hidden;}
+.mockup-bar{background:var(--bg2);padding:14px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
+.m-dots{display:flex;gap:6px;}
+.m-dots span{width:12px;height:12px;border-radius:50%;}
+.d1{background:#FF5F57;}.d2{background:#FEBC2E;}.d3{background:#28C840;}
+.m-url{flex:1;background:var(--bg3);border-radius:8px;padding:6px 14px;font-size:13px;color:var(--muted);border:1px solid var(--border);text-align:center;}
+.mockup-body{padding:28px;display:grid;grid-template-columns:1fr 1.2fr;gap:20px;}
+.upload-zone{border:2px dashed rgba(200,245,106,.25);border-radius:14px;padding:36px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.upload-icon{font-size:36px;opacity:.6;}
+.upload-zone p{font-size:13px;color:var(--muted);}
+.upload-zone strong{color:var(--text);font-size:14px;}
+.prog-label{font-size:11px;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:6px;margin-top:14px;width:100%;}
+.prog-bar{background:rgba(200,245,106,.1);height:4px;border-radius:100px;width:100%;}
+.prog-fill{height:100%;background:var(--accent);border-radius:100px;animation:grow 3s ease infinite;}
+@keyframes grow{0%{width:10%;}100%{width:95%;}}
+.mock-tabs{display:flex;gap:2px;margin-bottom:16px;}
+.mock-tab{font-size:12px;padding:6px 14px;border-radius:8px;cursor:pointer;font-weight:700;color:var(--muted);background:transparent;border:none;transition:all .2s;}
+.mock-tab.active{background:rgba(200,245,106,.12);color:var(--accent);}
+.result-block{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:12px;}
+.result-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--accent);margin-bottom:12px;}
+.r-line{height:7px;background:rgba(240,237,228,.08);border-radius:100px;margin-bottom:6px;}
+.r-line.w80{width:80%;}.r-line.w60{width:60%;}.r-line.w70{width:70%;}.r-line.w45{width:45%;}
+.q-row{display:flex;gap:10px;margin-bottom:9px;}
+.q-num{font-size:11px;font-weight:800;color:var(--accent);width:18px;flex-shrink:0;margin-top:1px;}
+.q-text{font-size:12px;color:var(--muted);line-height:1.45;}
+.fc-row{display:flex;gap:8px;margin-bottom:8px;}
+.fc-front{background:rgba(200,245,106,.08);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--accent);width:50%;flex-shrink:0;}
+.fc-back{font-size:12px;color:var(--muted);line-height:1.4;display:flex;align-items:center;}
+
+/* ── PROBLEM ── */
+.problem{background:var(--bg2);}
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;margin-top:60px;}
+.problem-text p{color:var(--muted);margin-top:20px;font-size:18px;line-height:1.7;}
+.pain-list{list-style:none;margin-top:32px;display:flex;flex-direction:column;gap:14px;}
+.pain-item{display:flex;align-items:flex-start;gap:16px;background:rgba(200,245,106,.04);border:1px solid var(--border);padding:18px 22px;border-radius:14px;}
+.pain-icon{font-size:20px;flex-shrink:0;margin-top:2px;}
+.pain-item strong{display:block;font-size:15px;font-weight:700;margin-bottom:3px;}
+.pain-item span{color:var(--muted);font-size:13px;}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.stat-card{background:var(--card);border:1px solid var(--border);padding:28px 24px;border-radius:var(--radius);text-align:center;}
+.stat-num{font-family:'DM Serif Display',serif;font-size:48px;color:var(--accent);line-height:1;margin-bottom:8px;}
+.stat-lbl{color:var(--muted);font-size:13px;line-height:1.5;}
+
+/* ── HOW IT WORKS ── */
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:60px;}
+.step-card{background:var(--card);border:1px solid var(--border);padding:40px 30px;border-radius:var(--radius);position:relative;overflow:hidden;transition:border-color .2s,transform .2s;}
+.step-card:hover{border-color:rgba(200,245,106,.4);transform:translateY(-4px);}
+.step-bg-num{font-family:'DM Serif Display',serif;font-size:80px;color:rgba(200,245,106,.07);position:absolute;right:16px;top:8px;line-height:1;pointer-events:none;}
+.step-icon{width:48px;height:48px;border-radius:12px;background:rgba(200,245,106,.12);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:22px;}
+.step-card h3{font-size:19px;font-weight:700;margin-bottom:10px;}
+.step-card p{color:var(--muted);font-size:14px;line-height:1.65;}
+.connector{display:flex;align-items:center;justify-content:center;padding-top:20px;}
+.conn-line{flex:1;height:1px;background:var(--border);}
+.conn-arrow{color:var(--accent);font-size:18px;padding:0 12px;}
+
+/* ── FEATURES ── */
+.features{background:var(--bg2);}
+.feat-layout{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start;margin-top:60px;}
+.feat-list{display:flex;flex-direction:column;gap:8px;}
+.feat-item{display:flex;align-items:flex-start;gap:14px;padding:18px 20px;border-radius:14px;cursor:pointer;border:1px solid transparent;transition:all .2s;}
+.feat-item.active,.feat-item:hover{background:rgba(200,245,106,.06);border-color:var(--border);}
+.feat-item.active .fi-dot{background:var(--accent);}
+.fi-dot{width:10px;height:10px;border-radius:50%;background:var(--muted);flex-shrink:0;margin-top:5px;transition:background .2s;}
+.feat-item h4{font-size:15px;font-weight:700;margin-bottom:3px;}
+.feat-item p{color:var(--muted);font-size:13px;line-height:1.55;}
+.feat-preview{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;position:sticky;top:100px;}
+.prev-bar{display:flex;align-items:center;gap:7px;margin-bottom:22px;}
+.prev-title{font-size:12px;font-weight:700;color:var(--muted);margin-left:8px;}
+.prev-section{margin-bottom:20px;}
+.prev-section-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--accent);margin-bottom:12px;}
+.bullet-row{display:flex;align-items:flex-start;gap:9px;margin-bottom:8px;}
+.b-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:7px;}
+.bullet-row p{font-size:13px;color:var(--muted);line-height:1.5;}
+.tag-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;}
+.tag{background:rgba(200,245,106,.1);color:var(--accent);padding:5px 12px;border-radius:100px;font-size:11px;font-weight:700;}
+.prog-row{display:flex;flex-direction:column;gap:12px;margin-top:10px;}
+.prog-item{display:flex;align-items:center;gap:10px;font-size:12px;}
+.prog-item span{color:var(--muted);width:130px;flex-shrink:0;}
+.prog-track{flex:1;background:rgba(200,245,106,.1);height:5px;border-radius:100px;}
+.prog-val{height:100%;background:var(--accent);border-radius:100px;}
+.prog-pct{color:var(--accent);font-weight:700;width:32px;text-align:right;}
+
+/* ── SOCIAL PROOF ── */
+.logos-section{background:var(--bg2);padding:64px 24px;}
+.logos-label{text-align:center;font-size:13px;color:var(--muted);font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:40px;}
+.logos-row{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:40px;}
+.uni-badge{background:var(--card);border:1px solid var(--border);padding:12px 24px;border-radius:100px;font-size:14px;font-weight:700;color:var(--muted);}
+
+/* ── FAQ ── */
+.faq-list{max-width:720px;margin:52px auto 0;display:flex;flex-direction:column;gap:12px;}
+.faq-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.faq-q{padding:22px 28px;font-size:16px;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;}
+.faq-q:hover{color:var(--accent);}
+.faq-arrow{font-size:18px;transition:transform .25s;color:var(--muted);}
+.faq-item.open .faq-arrow{transform:rotate(45deg);color:var(--accent);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .3s;}
+.faq-item.open .faq-a{max-height:200px;padding:0 28px 22px;}
+.faq-a p{color:var(--muted);font-size:15px;line-height:1.7;}
+
+/* ── PRICING ── */
+.pricing-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-top:60px;}
+.price-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:40px 30px;position:relative;transition:transform .2s;}
+.price-card:hover{transform:translateY(-4px);}
+.price-card.featured{background:var(--accent);border-color:var(--accent);}
+.price-card.featured *{color:#0C0E0A !important;}
+.popular-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:#0C0E0A;color:var(--accent);padding:6px 20px;border-radius:100px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;}
+.price-tier{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:18px;}
+.price-amount{font-family:'DM Serif Display',serif;font-size:52px;line-height:1;margin-bottom:6px;}
+.price-period{font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.5;}
+.price-divider{border:none;border-top:1px solid rgba(240,237,228,.1);margin-bottom:24px;}
+.price-card.featured .price-divider{border-top-color:rgba(12,14,10,.2);}
+.price-features{list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:32px;}
+.price-features li{font-size:14px;display:flex;align-items:flex-start;gap:10px;}
+.price-features li::before{content:'✓';font-weight:800;flex-shrink:0;color:var(--accent);}
+.price-card.featured .price-features li::before{color:#0C0E0A;}
+.price-features .no::before{content:'✗';color:rgba(240,237,228,.25);}
+.price-features .no{color:var(--muted);}
+.btn-plan{display:block;text-align:center;padding:14px;border-radius:100px;font-weight:700;font-size:15px;text-decoration:none;transition:all .2s;cursor:pointer;border:none;}
+.btn-dark{background:#0C0E0A;color:var(--accent);}
+.btn-dark:hover{background:#1a1f15;}
+.btn-outline{background:transparent;color:var(--text);border:1px solid rgba(240,237,228,.25);}
+.btn-outline:hover{background:rgba(240,237,228,.07);}
+.price-note{text-align:center;margin-top:32px;color:var(--muted);font-size:13px;}
+
+/* ── TESTIMONIALS ── */
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:60px;}
+.testi-card{background:var(--card);border:1px solid var(--border);padding:30px;border-radius:var(--radius);}
+.stars{color:var(--accent);font-size:15px;letter-spacing:2px;margin-bottom:14px;}
+.testi-card blockquote{font-size:14px;color:var(--muted);line-height:1.75;margin-bottom:22px;font-style:italic;}
+.testi-author{display:flex;align-items:center;gap:12px;}
+.testi-av{width:38px;height:38px;border-radius:50%;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.testi-name{font-size:14px;font-weight:700;}
+.testi-meta{font-size:12px;color:var(--muted);}
+
+/* ── COMPARISON ── */
+.compare{background:var(--bg2);}
+.cmp-wrap{border:1px solid var(--border);border-radius:20px;overflow:hidden;margin-top:52px;}
+.cmp-row{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr 1fr;border-bottom:1px solid var(--border);}
+.cmp-row:last-child{border-bottom:none;}
+.cmp-cell{padding:17px 22px;font-size:14px;display:flex;align-items:center;}
+.cmp-row.head{background:rgba(200,245,106,.05);}
+.cmp-row.head .cmp-cell{font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);}
+.cmp-row.head .cmp-cell:nth-child(2){color:var(--accent);}
+.cmp-row:nth-child(even){background:rgba(200,245,106,.02);}
+.chk{color:var(--accent);font-weight:800;}
+.crs{color:rgba(240,237,228,.2);}
+.partial{color:#FEBC2E;font-weight:800;}
+
+/* ── CTA ── */
+.cta-sec{text-align:center;padding:140px 24px;position:relative;overflow:hidden;}
+.cta-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(200,245,106,.12) 0%,transparent 70%);pointer-events:none;}
+.cta-sec h2{font-family:'DM Serif Display',serif;font-size:clamp(40px,6vw,76px);line-height:1.05;letter-spacing:-1.5px;margin-bottom:22px;position:relative;}
+.cta-sec h2 em{font-style:italic;color:var(--accent);}
+.cta-sec p{color:var(--muted);font-size:18px;margin-bottom:44px;position:relative;}
+.cta-trust{margin-top:20px;font-size:13px;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;}
+.cta-trust span::before{content:'✓ ';}
+
+/* ── FOOTER ── */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:64px 24px 40px;}
+.footer-inner{max-width:1100px;margin:0 auto;}
+.footer-top{display:flex;justify-content:space-between;align-items:flex-start;gap:48px;margin-bottom:52px;}
+.footer-brand p{color:var(--muted);font-size:14px;margin-top:14px;max-width:240px;line-height:1.6;}
+.footer-links{display:flex;gap:56px;}
+.f-col h5{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:16px;}
+.f-col ul{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.f-col a{color:var(--text);text-decoration:none;font-size:14px;opacity:.65;transition:opacity .2s;}
+.f-col a:hover{opacity:1;}
+.footer-bottom{border-top:1px solid var(--border);padding-top:28px;display:flex;justify-content:space-between;align-items:center;}
+.footer-bottom p{color:var(--muted);font-size:13px;}
+.footer-socials{display:flex;gap:12px;}
+.soc-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);text-decoration:none;font-size:12px;font-weight:800;transition:all .2s;}
+.soc-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ── MOBILE ── */
+@media(max-width:900px){
+  nav{padding:14px 20px;}
+  .nav-links{display:none;}
+  .problem-grid,.feat-layout,.testi-grid,.pricing-grid,.steps-grid,.footer-top{grid-template-columns:1fr;}
+  .footer-links{flex-direction:column;gap:28px;}
+  .cmp-wrap{overflow-x:auto;}
+  .cmp-row{grid-template-columns:170px 85px 85px 85px 85px;}
+  .mockup-body{grid-template-columns:1fr;}
+}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(12,14,10,.85);backdrop-filter:blur(8px);z-index:200;display:none;align-items:center;justify-content:center;padding:24px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:24px;padding:48px;max-width:460px;width:100%;position:relative;}
+.modal-close{position:absolute;top:18px;right:22px;background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer;line-height:1;}
+.modal-close:hover{color:var(--text);}
+.modal h3{font-family:'DM Serif Display',serif;font-size:32px;margin-bottom:8px;letter-spacing:-.5px;}
+.modal p{color:var(--muted);font-size:15px;margin-bottom:28px;}
+.form-group{margin-bottom:16px;}
+.form-group label{display:block;font-size:13px;font-weight:700;margin-bottom:8px;color:var(--muted);}
+.form-group input,.form-group select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;color:var(--text);font-family:'Syne',sans-serif;font-size:15px;outline:none;transition:border-color .2s;}
+.form-group input:focus,.form-group select:focus{border-color:rgba(200,245,106,.5);}
+.form-group select option{background:var(--bg3);}
+.modal-btn{width:100%;background:var(--accent);color:#0C0E0A;padding:15px;border-radius:100px;font-weight:800;font-size:16px;border:none;cursor:pointer;margin-top:8px;transition:transform .15s;}
+.modal-btn:hover{transform:scale(1.02);}
+.modal-note{text-align:center;font-size:12px;color:var(--muted);margin-top:14px;}
+.modal-tabs{display:flex;gap:4px;margin-bottom:28px;background:var(--bg3);padding:4px;border-radius:10px;}
+.modal-tab{flex:1;padding:10px;border-radius:8px;border:none;background:transparent;color:var(--muted);font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:all .2s;}
+.modal-tab.active{background:var(--bg2);color:var(--text);}
+.success-msg{text-align:center;padding:24px 0;}
+.success-icon{font-size:48px;margin-bottom:16px;}
+.success-msg h4{font-family:'DM Serif Display',serif;font-size:24px;margin-bottom:8px;}
+.success-msg p{color:var(--muted);}
+</style>
+</head>
+<body>
+
+<!-- SIGN UP / LOGIN MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-content">
+      <div class="modal-tabs">
+        <button class="modal-tab active" onclick="switchTab('signup')">Sign Up Free</button>
+        <button class="modal-tab" onclick="switchTab('login')">Log In</button>
+      </div>
+      <h3 id="modal-title">Start for free</h3>
+      <p id="modal-desc">No credit card required. Upload your first document in 60 seconds.</p>
+      <div id="signup-form">
+        <div class="form-group">
+          <label>Full name</label>
+          <input type="text" placeholder="Your name" id="inp-name">
+        </div>
+        <div class="form-group">
+          <label>Email address</label>
+          <input type="email" placeholder="you@university.edu" id="inp-email">
+        </div>
+        <div class="form-group">
+          <label>Your university</label>
+          <select id="inp-uni">
+            <option value="">Select your university…</option>
+            <option>University of Amsterdam (UvA)</option>
+            <option>TU Delft</option>
+            <option>Utrecht University</option>
+            <option>Erasmus University Rotterdam</option>
+            <option>Leiden University</option>
+            <option>KU Leuven</option>
+            <option>VU Amsterdam</option>
+            <option>University of Groningen</option>
+            <option>Ghent University</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" placeholder="Choose a password" id="inp-pw">
+        </div>
+        <!-- TODO: Replace onclick with real Supabase auth call — see setup guide below -->
+        <button class="modal-btn" onclick="handleSignup()">Create my free account →</button>
+        <p class="modal-note">By signing up you agree to our Terms of Service and Privacy Policy.</p>
+      </div>
+      <div id="login-form" style="display:none">
+        <div class="form-group">
+          <label>Email address</label>
+          <input type="email" placeholder="you@university.edu">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" placeholder="Your password">
+        </div>
+        <button class="modal-btn" onclick="handleLogin()">Log in →</button>
+        <p class="modal-note"><a href="#" style="color:var(--accent)">Forgot password?</a></p>
+      </div>
+      <div id="success-view" style="display:none">
+        <div class="success-msg">
+          <div class="success-icon">🎉</div>
+          <h4>You're on the list!</h4>
+          <p>Check your inbox — we sent you a confirmation email. You'll get early access within 24 hours.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">Study<span>Snap</span></a>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="#" class="nav-login" onclick="openModal();return false;">Log in</a>
+    <a href="#" class="nav-cta" onclick="openModal();return false;">Try for free</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-badge"><div class="pulse"></div>Now in beta — free to try</div>
+  <h1>From 80 pages to<br><em>exam-ready</em><br>in 5 minutes.</h1>
+  <p class="hero-sub">StudySnap uses AI to automatically summarize your study materials, generate practice questions and test your knowledge — so you actually score higher.</p>
+  <div class="hero-actions">
+    <a href="#" class="btn-primary" onclick="openModal();return false;">Start for free — no credit card</a>
+    <a href="#how" class="btn-ghost">See how it works</a>
+  </div>
+  <div class="hero-social">
+    <span class="hero-avatars">
+      <span class="avatar av1">LV</span><span class="avatar av2">JK</span><span class="avatar av3">RM</span><span class="avatar av4">SA</span>
+    </span>
+    Already used by <strong>1,200+ students</strong> at UvA, TU Delft &amp; KU Leuven
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-inner" id="ticker"></div>
+</div>
+
+<!-- APP MOCKUP -->
+<div class="mockup-section">
+  <div class="mockup-wrap reveal">
+    <div class="mockup-bar">
+      <div class="m-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+      <div class="m-url">app.studysnap.io</div>
+    </div>
+    <div class="mockup-body">
+      <div class="upload-zone">
+        <div class="upload-icon">📄</div>
+        <strong>Chapter_3_Cognition.pdf</strong>
+        <p>78 pages uploaded</p>
+        <p style="font-size:12px;margin-top:4px">Supports PDF, Word, and plain text</p>
+        <div style="width:100%">
+          <div class="prog-label"><span>AI processing document…</span><span>73%</span></div>
+          <div class="prog-bar"><div class="prog-fill"></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="mock-tabs">
+          <button class="mock-tab active" onclick="switchMockTab(this,'sum')">Summary</button>
+          <button class="mock-tab" onclick="switchMockTab(this,'qst')">Questions</button>
+          <button class="mock-tab" onclick="switchMockTab(this,'fcs')">Flashcards</button>
+        </div>
+        <div id="mock-sum">
+          <div class="result-block">
+            <div class="result-label">📌 Key Concepts</div>
+            <div class="r-line w80"></div><div class="r-line w60"></div><div class="r-line w70"></div><div class="r-line w45"></div><div class="r-line w80"></div>
+          </div>
+          <div class="result-block">
+            <div class="result-label">🏷️ Glossary</div>
+            <div class="r-line w60"></div><div class="r-line w80"></div><div class="r-line w50" style="width:50%"></div>
+          </div>
+        </div>
+        <div id="mock-qst" style="display:none">
+          <div class="result-block">
+            <div class="result-label">🎯 Practice Questions</div>
+            <div class="q-row"><div class="q-num">Q1</div><div class="q-text">What is the difference between working memory and long-term memory?</div></div>
+            <div class="q-row"><div class="q-num">Q2</div><div class="q-text">Describe the role of the hippocampus in memory consolidation.</div></div>
+            <div class="q-row"><div class="q-num">Q3</div><div class="q-text">Name three factors that influence cognitive load during learning.</div></div>
+          </div>
+        </div>
+        <div id="mock-fcs" style="display:none">
+          <div class="result-block">
+            <div class="result-label">🃏 Flashcards</div>
+            <div class="fc-row"><div class="fc-front">Cognitive load</div><div class="fc-back">Mental effort used in working memory during learning</div></div>
+            <div class="fc-row"><div class="fc-front">Hippocampus</div><div class="fc-back">Brain region central to forming and consolidating new memories</div></div>
+            <div class="fc-row"><div class="fc-front">Chunking</div><div class="fc-back">Grouping information into meaningful units to reduce cognitive load</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGOS / SOCIAL PROOF -->
+<div class="logos-section reveal">
+  <div class="logos-label">Trusted by students at</div>
+  <div class="logos-row">
+    <div class="uni-badge">University of Amsterdam</div>
+    <div class="uni-badge">TU Delft</div>
+    <div class="uni-badge">KU Leuven</div>
+    <div class="uni-badge">Utrecht University</div>
+    <div class="uni-badge">Erasmus University</div>
+    <div class="uni-badge">Leiden University</div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section class="problem">
+  <div class="container">
+    <div class="problem-grid">
+      <div class="reveal">
+        <div class="section-label">The problem</div>
+        <h2 class="section-title">You have the material.<br>Not the <em>time.</em></h2>
+        <p>You read a 40-page chapter and an hour later you remember 20% of it. You don't know what's exam-relevant — and you have no idea if you actually understand it.</p>
+        <ul class="pain-list">
+          <li class="pain-item"><div class="pain-icon">😵</div><div><strong>Too much material, too little time</strong><span>Average 150+ pages per course per block — impossible to process manually.</span></div></li>
+          <li class="pain-item"><div class="pain-icon">🤷</div><div><strong>You don't know what's important</strong><span>Without guidance you can't tell what the professor will actually ask on the exam.</span></div></li>
+          <li class="pain-item"><div class="pain-icon">🔄</div><div><strong>Passive reading doesn't work</strong><span>Reading ≠ learning. Without active processing, retention drops to under 20%.</span></div></li>
+        </ul>
+      </div>
+      <div class="stat-grid reveal">
+        <div class="stat-card"><div class="stat-num">78%</div><div class="stat-lbl">of students don't have enough time to study all their material</div></div>
+        <div class="stat-card"><div class="stat-num">20%</div><div class="stat-lbl">average retention from passive reading without active structure</div></div>
+        <div class="stat-card"><div class="stat-num">3.4h</div><div class="stat-lbl">average time spent manually summarizing one textbook chapter</div></div>
+        <div class="stat-card"><div class="stat-num">5 min</div><div class="stat-lbl">is all StudySnap needs to do the same thing</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="reveal section-center">
+      <div class="section-label">How it works</div>
+      <h2 class="section-title">Three steps.<br>One <em>result.</em></h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card reveal">
+        <div class="step-bg-num">01</div>
+        <div class="step-icon">📄</div>
+        <h3>Upload your material</h3>
+        <p>Drop in your PDF, Word document, or paste any text directly. StudySnap handles up to 500 pages per upload.</p>
+      </div>
+      <div class="step-card reveal" style="transition-delay:.1s">
+        <div class="step-bg-num">02</div>
+        <div class="step-icon">⚡</div>
+        <h3>AI processes it</h3>
+        <p>Within 60 seconds you get a sharp summary, a glossary of key terms, and targeted practice questions.</p>
+      </div>
+      <div class="step-card reveal" style="transition-delay:.2s">
+        <div class="step-bg-num">03</div>
+        <div class="step-icon">🎯</div>
+        <h3>Test your knowledge</h3>
+        <p>Work through auto-generated flashcards and questions. Export your cheat sheet as a PDF for exam day.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Features</div>
+      <h2 class="section-title">Everything you need<br>to score <em>higher.</em></h2>
+    </div>
+    <div class="feat-layout reveal">
+      <div class="feat-list">
+        <div class="feat-item active" onclick="setFeat(this,'sum')">
+          <div class="fi-dot"></div>
+          <div><h4>Smart summaries</h4><p>Bullet-point summaries that capture what matters — not everything, just what's exam-relevant.</p></div>
+        </div>
+        <div class="feat-item" onclick="setFeat(this,'qst')">
+          <div class="fi-dot"></div>
+          <div><h4>Auto practice questions</h4><p>Open-ended and multiple-choice questions based on your exact material, generated in seconds.</p></div>
+        </div>
+        <div class="feat-item" onclick="setFeat(this,'gls')">
+          <div class="fi-dot"></div>
+          <div><h4>Glossary &amp; definitions</h4><p>All key terms are automatically highlighted and explained — perfect as a quick reference.</p></div>
+        </div>
+        <div class="feat-item" onclick="setFeat(this,'fcs')">
+          <div class="fi-dot"></div>
+          <div><h4>Flashcard knowledge check</h4><p>Spaced repetition system that tracks what you know and what needs another round.</p></div>
+        </div>
+        <div class="feat-item" onclick="setFeat(this,'exp')">
+          <div class="fi-dot"></div>
+          <div><h4>PDF &amp; Word export</h4><p>Download your summary as a clean PDF or Word doc to study offline or print.</p></div>
+        </div>
+      </div>
+      <div class="feat-preview">
+        <div class="prev-bar">
+          <div class="dot" style="width:12px;height:12px;border-radius:50%;background:#FF5F57"></div>
+          <div class="dot" style="width:12px;height:12px;border-radius:50%;background:#FEBC2E"></div>
+          <div class="dot" style="width:12px;height:12px;border-radius:50%;background:#28C840"></div>
+          <div class="prev-title">StudySnap — Preview</div>
+        </div>
+        <div id="feat-sum">
+          <div class="prev-section">
+            <div class="prev-section-lbl">📌 Key concepts</div>
+            <div class="bullet-row"><div class="b-dot"></div><p>Cognitive load theory (Sweller, 1988) describes the limited capacity of working memory when learning new information.</p></div>
+            <div class="bullet-row"><div class="b-dot"></div><p>Three types: intrinsic, extraneous and germane cognitive load — each with different implications for learning effectiveness.</p></div>
+            <div class="bullet-row"><div class="b-dot"></div><p>Automatization reduces cognitive load by building knowledge schemas in long-term memory.</p></div>
+          </div>
+          <div class="prev-section">
+            <div class="prev-section-lbl">🏷️ Glossary tags</div>
+            <div class="tag-row"><span class="tag">Working memory</span><span class="tag">Chunking</span><span class="tag">Elaborative rehearsal</span><span class="tag">Forgetting curve</span></div>
+          </div>
+        </div>
+        <div id="feat-qst" style="display:none">
+          <div class="prev-section">
+            <div class="prev-section-lbl">🎯 Practice questions</div>
+            <div class="q-row"><div class="q-num">Q1</div><div class="q-text">Explain the difference between intrinsic and extraneous cognitive load. Give a practical example for each.</div></div>
+            <div class="q-row"><div class="q-num">Q2</div><div class="q-text">According to Sweller, what is the main limitation of working memory during complex learning?</div></div>
+            <div class="q-row"><div class="q-num">Q3</div><div class="q-text">How does automatization of sub-tasks influence the germane cognitive load?</div></div>
+            <div class="q-row"><div class="q-num">Q4</div><div class="q-text">Describe two instructional strategies that reduce extraneous cognitive load.</div></div>
+          </div>
+        </div>
+        <div id="feat-gls" style="display:none">
+          <div class="prev-section">
+            <div class="prev-section-lbl">📖 Glossary</div>
+            <div class="bullet-row"><div class="b-dot"></div><p><strong style="color:var(--accent)">Cognitive load</strong> — The mental effort being used in working memory at any given time.</p></div>
+            <div class="bullet-row"><div class="b-dot"></div><p><strong style="color:var(--accent)">Schema</strong> — A cognitive framework that helps organize and interpret information.</p></div>
+            <div class="bullet-row"><div class="b-dot"></div><p><strong style="color:var(--accent)">Automatization</strong> — A process by which a behavior becomes automatic through practice, freeing up cognitive resources.</p></div>
+          </div>
+        </div>
+        <div id="feat-fcs" style="display:none">
+          <div class="prev-section">
+            <div class="prev-section-lbl">🃏 Flashcard progress</div>
+            <div class="prog-row">
+              <div class="prog-item"><span>Cognitive load</span><div class="prog-track"><div class="prog-val" style="width:90%"></div></div><div class="prog-pct">90%</div></div>
+              <div class="prog-item"><span>Schema theory</span><div class="prog-track"><div class="prog-val" style="width:65%"></div></div><div class="prog-pct">65%</div></div>
+              <div class="prog-item"><span>Automatization</span><div class="prog-track"><div class="prog-val" style="width:40%"></div></div><div class="prog-pct">40%</div></div>
+              <div class="prog-item"><span>Forgetting curve</span><div class="prog-track"><div class="prog-val" style="width:75%"></div></div><div class="prog-pct">75%</div></div>
+            </div>
+          </div>
+        </div>
+        <div id="feat-exp" style="display:none">
+          <div class="prev-section">
+            <div class="prev-section-lbl">📥 Export options</div>
+            <div class="bullet-row"><div class="b-dot"></div><p>Export as a clean <strong style="color:var(--text)">PDF cheat sheet</strong> — formatted and printable for exam day.</p></div>
+            <div class="bullet-row"><div class="b-dot"></div><p>Download as <strong style="color:var(--text)">Word (.docx)</strong> — editable so you can add your own notes.</p></div>
+            <div class="bullet-row"><div class="b-dot"></div><p>Share a <strong style="color:var(--text)">read-only link</strong> with your study group — no account required to view.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section>
+  <div class="container">
+    <div class="reveal section-center">
+      <div class="section-label">What students say</div>
+      <h2 class="section-title">They're scoring <em>higher.</em></h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="stars">★★★★★</div>
+        <blockquote>"It used to take me 6 hours to summarize one chapter. Now I do it in 40 minutes and I get better grades than ever. StudySnap really understands what's exam-relevant."</blockquote>
+        <div class="testi-author"><div class="testi-av" style="background:#2A4A35;color:#C8F56A">LV</div><div><div class="testi-name">Lisa van der Berg</div><div class="testi-meta">Law student, UvA — Year 2</div></div></div>
+      </div>
+      <div class="testi-card reveal" style="transition-delay:.1s">
+        <div class="stars">★★★★★</div>
+        <blockquote>"As an ADHD student this is a game-changer. I can finally grab the key points without getting lost for hours. The practice questions right before my exam are worth gold."</blockquote>
+        <div class="testi-author"><div class="testi-av" style="background:#4A2A2A;color:#F5C8C8">JK</div><div><div class="testi-name">Jonas Kerkhof</div><div class="testi-meta">Psychology, KU Leuven — Year 3</div></div></div>
+      </div>
+      <div class="testi-card reveal" style="transition-delay:.2s">
+        <div class="stars">★★★★★</div>
+        <blockquote>"I work next to my studies and barely had time. StudySnap completely changed how I study. The flashcard system made me actually remember things instead of just reading them."</blockquote>
+        <div class="testi-author"><div class="testi-av" style="background:#2A3A4A;color:#C8D8F5">RM</div><div><div class="testi-name">Roos Martens</div><div class="testi-meta">Economics, Erasmus — Year 1</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section class="compare" id="compare">
+  <div class="container reveal">
+    <div class="section-label">Comparison</div>
+    <h2 class="section-title">Better than the<br><em>alternatives.</em></h2>
+    <div class="cmp-wrap">
+      <div class="cmp-row head">
+        <div class="cmp-cell">Feature</div>
+        <div class="cmp-cell" style="color:var(--accent)">StudySnap</div>
+        <div class="cmp-cell">ChatGPT</div>
+        <div class="cmp-cell">Quizlet</div>
+        <div class="cmp-cell">Scholarcy</div>
+      </div>
+      <div class="cmp-row"><div class="cmp-cell">PDF → instant summary</div><div class="cmp-cell"><span class="chk">✓</span></div><div class="cmp-cell"><span class="crs">✗</span></div><div class="cmp-cell"><span class="crs">✗</span></div><div class="cmp-cell"><span class="chk">✓</span></div></div>
+      <div class="cmp-row"><div class="cmp-cell">Auto practice questions</div><div class="cmp-cell"><span class="chk">✓</span></div><div class="cmp-cell"><span class="crs">✗</span></div><div class="cmp-cell"><span class="crs">✗</span></div><div class="cmp-cell"><span class="crs">✗</span></div></div>
+      <div class="cmp-row"><div class="cmp-cell">Flashcards from your own material</div><div class="cmp-cell"><span class="chk">✓</span></div><div class="cmp-cell"><span class="crs">✗</span></div><div class="cmp-cell"><span class="partial">~</span></div><div class="cmp-cell"><span class="crs">✗</span></div></div>
+      <div class="cmp-row"><div class="cmp-cell">No manual input required</div><div class="cmp-cell"><span class="chk">✓</span></div><div class="cmp-cell"><span class="partial">~</span></div><div class="cmp-cell"><span class="crs">✗</span></div><div class="cmp-cell"><span class="chk">✓</span></div></div>
+      <div class="cmp-row"><div class="cmp-cell">Built for students</div><div class="cmp-cell"><span class="chk">✓</span></div><div class="cmp-cell"><span class="crs">✗</span></div><div class="cmp-cell"><span class="chk">✓</span></div><div class="cmp-cell"><span class="crs">✗</span></div></div>
+      <div class="cmp-row"><div class="cmp-cell">Export to PDF / Word</div><div class="cmp-cell"><span class="chk">✓</span></div><div class="cmp-cell"><span class="crs">✗</span></div><div class="cmp-cell"><span class="crs">✗</span></div><div class="cmp-cell"><span class="partial">~</span></div></div>
+      <div class="cmp-row"><div class="cmp-cell">Price</div><div class="cmp-cell" style="color:var(--accent);font-weight:700">Free / €7.99</div><div class="cmp-cell" style="color:var(--muted)">€20/mo</div><div class="cmp-cell" style="color:var(--muted)">€35/yr</div><div class="cmp-cell" style="color:var(--muted)">€9.99/mo</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="container">
+    <div class="reveal section-center">
+      <div class="section-label">Pricing</div>
+      <h2 class="section-title">Less than a cup of<br><em>coffee</em> per week.</h2>
+      <p style="color:var(--muted);margin-top:14px;font-size:16px">Start free. Upgrade when you're ready.</p>
+    </div>
+    <div class="pricing-grid reveal">
+      <div class="price-card">
+        <div class="price-tier">Free</div>
+        <div class="price-amount">€0</div>
+        <div class="price-period">forever free</div>
+        <hr class="price-divider">
+        <ul class="price-features">
+          <li>3 uploads per month</li>
+          <li>Up to 10 pages per upload</li>
+          <li>Basic summaries</li>
+          <li>5 practice questions per upload</li>
+          <li class="no">Flashcard knowledge check</li>
+          <li class="no">PDF / Word export</li>
+          <li class="no">Study group access</li>
+        </ul>
+        <button class="btn-plan btn-outline" onclick="openModal()">Get started free</button>
+      </div>
+      <div class="price-card featured">
+        <div class="popular-badge">⚡ Most popular</div>
+        <div class="price-tier">Pro</div>
+        <div class="price-amount">€7.99</div>
+        <div class="price-period">per month — or €59/year (save 38%)</div>
+        <hr class="price-divider">
+        <ul class="price-features">
+          <li>Unlimited uploads</li>
+          <li>Up to 500 pages per document</li>
+          <li>Smart summaries + glossary</li>
+          <li>Unlimited practice questions</li>
+          <li>Flashcard knowledge check</li>
+          <li>PDF &amp; Word export</li>
+          <li>Priority AI processing</li>
+        </ul>
+        <button class="btn-plan btn-dark" onclick="openModal()">Activate Pro</button>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">Study Group</div>
+        <div class="price-amount">€4.99</div>
+        <div class="price-period">per person/month (min. 4 people)</div>
+        <hr class="price-divider">
+        <ul class="price-features">
+          <li>Everything in Pro</li>
+          <li>Shared documents</li>
+          <li>Joint flashcard sessions</li>
+          <li>Group progress dashboard</li>
+          <li>One shared billing</li>
+          <li class="no">Custom branding</li>
+          <li class="no">API access</li>
+        </ul>
+        <button class="btn-plan btn-outline" onclick="openModal()">Create a group</button>
+      </div>
+    </div>
+    <p class="price-note reveal">✓ Cancel anytime &nbsp;·&nbsp; ✓ 7-day money-back guarantee &nbsp;·&nbsp; ✓ Student pricing — no hidden fees</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" style="background:var(--bg2)">
+  <div class="container">
+    <div class="reveal section-center">
+      <div class="section-label">FAQ</div>
+      <h2 class="section-title">Common <em>questions.</em></h2>
+    </div>
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">What file types does StudySnap support? <span class="faq-arrow">+</span></div>
+        <div class="faq-a"><p>StudySnap currently supports PDF, Word (.docx), and plain text paste. Support for PowerPoint slides and scanned documents (via OCR) is planned for Q3 2025.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Is my data safe and private? <span class="faq-arrow">+</span></div>
+        <div class="faq-a"><p>Yes. Your documents are processed securely and never used to train AI models. We comply with GDPR. Documents are deleted from our servers after processing unless you choose to save them.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">How accurate are the summaries? <span class="faq-arrow">+</span></div>
+        <div class="faq-a"><p>StudySnap uses state-of-the-art language models and achieves very high accuracy on academic texts. We always recommend reviewing the summary alongside your original material for critical exams.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Does it work for all subjects? <span class="faq-arrow">+</span></div>
+        <div class="faq-a"><p>Yes — StudySnap works well for text-heavy subjects like Law, Psychology, Economics, History, Medicine and more. It works less well for highly mathematical content (like pure math or physics equations), though support for that is in development.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Can I share summaries with my study group? <span class="faq-arrow">+</span></div>
+        <div class="faq-a"><p>Yes. Pro users can share a read-only link to any summary — no account needed to view it. Study Group plan users can also work on shared documents together in real time.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">What languages does it support? <span class="faq-arrow">+</span></div>
+        <div class="faq-a"><p>StudySnap works with documents in English, Dutch, German, French and Spanish. You can also set your preferred output language independently of the input language.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta-sec">
+  <div class="cta-glow"></div>
+  <div class="reveal" style="position:relative">
+    <div class="section-label" style="text-align:center">Ready?</div>
+    <h2>Your next exam,<br>you're going to <em>nail it.</em></h2>
+    <p>Upload your first document free. No credit card. No setup.</p>
+    <a href="#" class="btn-primary" style="font-size:18px;padding:20px 48px" onclick="openModal();return false;">Start for free →</a>
+    <div class="cta-trust">
+      <span>Free forever plan</span>
+      <span>No credit card</span>
+      <span>7-day money-back</span>
+      <span>GDPR compliant</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="logo">Study<span>Snap</span></a>
+        <p>The smartest study tool for students. From raw material to exam-ready in minutes.</p>
+      </div>
+      <div class="footer-links">
+        <div class="f-col">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#how">How it works</a></li>
+            <li><a href="#">Changelog</a></li>
+          </ul>
+        </div>
+        <div class="f-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="#">About us</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">Affiliate program</a></li>
+          </ul>
+        </div>
+        <div class="f-col">
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">GDPR / AVG</a></li>
+            <li><a href="#">Cookie settings</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 StudySnap. Made with ❤️ for students.</p>
+      <div class="footer-socials">
+        <a href="#" class="soc-btn">TT</a>
+        <a href="#" class="soc-btn">IG</a>
+        <a href="#" class="soc-btn">LI</a>
+        <a href="#" class="soc-btn">DC</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── SCROLL REVEAL ── */
+const ro = new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+
+/* ── TICKER ── */
+const items=['PDF summaries in 60 seconds','Auto-generated practice questions','Flashcard knowledge check','Glossary & key terms','Export to PDF & Word','Spaced repetition learning','Works with any subject','Used by 1,200+ students','GDPR compliant & secure','Cancel anytime'];
+const t=document.getElementById('ticker');
+const html=items.map(i=>`<span class="tick-item"><span class="tick-dot"></span>${i}</span>`).join('');
+t.innerHTML=html+html;
+
+/* ── MODAL ── */
+function openModal(){document.getElementById('modal').classList.add('open');}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+let currentTab='signup';
+function switchTab(tab){
+  currentTab=tab;
+  document.querySelectorAll('.modal-tab').forEach((t,i)=>t.classList.toggle('active',(tab==='signup'&&i===0)||(tab==='login'&&i===1)));
+  document.getElementById('signup-form').style.display=tab==='signup'?'block':'none';
+  document.getElementById('login-form').style.display=tab==='login'?'block':'none';
+  document.getElementById('success-view').style.display='none';
+  document.getElementById('modal-title').textContent=tab==='signup'?'Start for free':'Welcome back';
+  document.getElementById('modal-desc').textContent=tab==='signup'?'No credit card required. Upload your first document in 60 seconds.':'Log in to your StudySnap account.';
+}
+
+function handleSignup(){
+  /* TODO: Replace this with Supabase Auth signup — see setup guide */
+  const name=document.getElementById('inp-name').value;
+  const email=document.getElementById('inp-email').value;
+  if(!name||!email){alert('Please fill in your name and email.');return;}
+  document.getElementById('signup-form').style.display='none';
+  document.getElementById('success-view').style.display='block';
+  document.getElementById('modal-title').textContent='';
+  document.getElementById('modal-desc').textContent='';
+}
+
+function handleLogin(){
+  /* TODO: Replace with Supabase Auth login */
+  alert('Login not yet connected. See setup guide inside the HTML file.');
+}
+
+/* ── MOCK TABS ── */
+function switchMockTab(btn,id){
+  document.querySelectorAll('.mock-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  ['sum','qst','fcs'].forEach(k=>{const el=document.getElementById('mock-'+k);if(el)el.style.display=k===id?'block':'none';});
+}
+
+/* ── FEATURES ── */
+const featMap={sum:'feat-sum',qst:'feat-qst',gls:'feat-gls',fcs:'feat-fcs',exp:'feat-exp'};
+function setFeat(el,id){
+  document.querySelectorAll('.feat-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+  Object.values(featMap).forEach(v=>{const n=document.getElementById(v);if(n)n.style.display='none';});
+  const t=document.getElementById(featMap[id]);if(t)t.style.display='block';
+}
+
+/* ── FAQ ── */
+function toggleFaq(el){
+  const item=el.parentElement;
+  const wasOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+  if(!wasOpen)item.classList.add('open');
+}
+</script>
+</body>
+</html>
