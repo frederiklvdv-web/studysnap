@@ -891,5 +891,13 @@ function toggleFaq(el){
   if(!wasOpen)item.classList.add('open');
 }
 </script>
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
+
+const supabase = createClient(
+  "https://JOUW-PROJECT.supabase.co",
+  "sb_publishable_jKW14kNiNKCw8j0qElCB4Q_NPz1hB4U"
+)
+</script>
 </body>
 </html>
