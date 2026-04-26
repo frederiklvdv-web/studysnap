@@ -900,7 +900,6 @@ function toggleFaq(el){
 <button onclick="logIn()">Log in</button>
 
 <p id="status"></p>
-</script>
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
 
@@ -908,6 +907,34 @@ const supabase = createClient(
   "https://iuzalboqzdqmsqfnoasq.supabase.co",
   "sb_publishable_jKW14kNiNKCw8j0qElCB4Q_NPz1hB4U"
 )
+
+// SIGN UP
+window.signUp = async function () {
+  const email = document.getElementById("email").value
+  const password = document.getElementById("password").value
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password
+  })
+
+  document.getElementById("status").innerText =
+    error ? error.message : "Check je email voor bevestiging!"
+}
+
+// LOGIN
+window.logIn = async function () {
+  const email = document.getElementById("email").value
+  const password = document.getElementById("password").value
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  })
+
+  document.getElementById("status").innerText =
+    error ? error.message : "Succesvol ingelogd!"
+}
 </script>
 </body>
 </html>
